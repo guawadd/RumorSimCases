@@ -1,0 +1,9 @@
+*.sln
+*.sdf
+*.opensdf
+*.suo
+*.vcxproj*
+
+[Dd]ebug*/
+[Rr]elease*/
+[Ii]pch*/
