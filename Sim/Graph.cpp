@@ -26,6 +26,26 @@ Graph::Graph(const Graph& G, Node v)
         }
 }
 
+Graph::Graph(const Graph& G)
+{
+    m_nodeSize = G.m_nodeSize;
+    m_edgeSize = G.m_edgeSize;
+    m_nodeList = G.m_nodeList;
+    m_adjacencyList = G.m_adjacencyList;
+}
+
+Graph& Graph::operator = (const Graph& G)
+{
+    m_nodeSize = G.m_nodeSize;
+    m_edgeSize = G.m_edgeSize;
+    m_nodeList = G.m_nodeList;
+    m_adjacencyList = G.m_adjacencyList;
+}
+
+Graph::~Graph()
+{
+}
+
 Graph::Graph(const char file[])
 : m_nodeSize      ( 0 ),
   m_edgeSize      ( 0 ),
@@ -43,8 +63,8 @@ Graph::Graph(const char file[])
     std::cout << "Load graph data...\n";
 
     // load graph to buffer
-    int numV, numE;
-    std::vector<std::vector<unsigned>> edgeBuf;
+    Size numV, numE;
+    NodeListVector edgeBuf;
     
     input >> numV >> numE;
     edgeBuf.resize(numE);

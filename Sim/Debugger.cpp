@@ -4,9 +4,11 @@ void Debugger::testRCCalculator(const Graph& G)
 {
     RCCalculator rcCalc;
     ScoreMap rc;
-    rcCalc.calcAll(G, rc);
+    //rcCalc.calcAll(G, rc);
+    rcCalc.calcRegCyc(G, rc);
 
-    std::ofstream output(".\\test\\test_output_rcCalc.txt");
+    //std::ofstream output(".\\test\\test_output_rcCalc.txt");
+    std::ofstream output(".\\test\\test_output_regCyc.txt");
     for(ScoreMap::const_iterator it=rc.begin(); it!=rc.end(); ++it)
         output << it->first << ": " << it->second << std::endl;
     
@@ -47,70 +49,70 @@ void Debugger::testProbOfPerm(const Graph& G)
 
 void Debugger::testEstimator(const Graph& G, int trial, int rumorSize) 
 {
-        std::ofstream output;
-        output.open(".\\result.txt");
-        output << "True source";
-        output << ", BFS_Heuristic(error hop)";
-        output << ", Levelwise_Heuristic(error hop)";
+    std::ofstream output;
+    output.open(".\\result.txt");
+    output << "True source";
+    output << ", BFS_Heuristic(error hop)";
+    output << ", Levelwise_Heuristic(error hop)";
         
+    output << std::endl;
+
+    BfsHeuristic bfsHeu;
+    LwHeuristic lwHeu;
+        
+    double errorHopBFS[10] = {0};
+    double errorHopLW[10] = {0};
+        
+    std::cout << "-------------------------------------\n";
+    std::cout << "Trial: number of edges in rumor graph\n";
+    for(int i=1;i<=trial;) 
+    {
+        Graph rumorGraph;
+        Node source = G.NodeAt(rand()%G.NodeSize());
+        Alg::SpreadRumor(G, rumorGraph, source, rumorSize);
+        std::string graphname = ".\\rumor_graph" + std::to_string((int long long)i) + ".txt";
+        Alg::PrintGraph(rumorGraph, graphname.c_str());
+
+        std::cout << i << ": " << rumorGraph.EdgeSize() << std::endl;
+
+        if( rumorGraph.EdgeSize()>rumorSize*1.5 )
+            continue;
+
+        bool skip = false;
+        Node centerLW  = lwHeu.infer(rumorGraph, G, skip);
+        if(skip)
+            continue;
+        Node centerBFS = bfsHeu.infer(rumorGraph, G); 
+            
+        Size distBFS = Alg::Distance(rumorGraph, centerBFS, source);
+        Size distLW  = Alg::Distance(rumorGraph, centerLW, source);
+
+        ++errorHopBFS[distBFS];
+        ++errorHopLW[distLW];
+            
+        output << rumorGraph.NodeAt(0);
+
+        output << ", " << centerBFS << "(" << distBFS << ")";
+        output << ", " << centerLW << "(" << distLW << ")";
+
         output << std::endl;
 
-        BfsHeuristic bfsHeu;
-        LwHeuristic lwHeu;
-        
-        double errorHopBFS[10] = {0};
-        double errorHopLW[10] = {0};
-        
-        std::cout << "-------------------------------------\n";
-        std::cout << "Trial: number of edges in rumor graph\n";
-        for(int i=1;i<=trial;) 
-        {
-            Graph rumorGraph;
-            Node source = G.NodeAt(rand()%G.NodeSize());
-            Alg::SpreadRumor(G, rumorGraph, source, rumorSize);
-            std::string graphname = ".\\rumor_graph" + std::to_string((int long long)i) + ".txt";
-            Alg::PrintGraph(rumorGraph, graphname.c_str());
+        ++i;
+    }
+    output << "==========================\n";
+    output << "Error hop frequency: 0(correct), 1, 2, 3,...\n";
 
-            std::cout << i << ": " << rumorGraph.EdgeSize() << std::endl;
-
-            if( rumorGraph.EdgeSize()>rumorSize*1.5 )
-                continue;
-
-            bool skip = false;
-            Node centerLW  = lwHeu.infer(rumorGraph, G, skip);
-            if(skip)
-                continue;
-            Node centerBFS = bfsHeu.infer(rumorGraph, G); 
-            
-            Size distBFS = Alg::Distance(rumorGraph, centerBFS, source);
-            Size distLW  = Alg::Distance(rumorGraph, centerLW, source);
-
-            ++errorHopBFS[distBFS];
-            ++errorHopLW[distLW];
-            
-            output << rumorGraph.NodeAt(0);
-
-            output << ", " << centerBFS << "(" << distBFS << ")";
-            output << ", " << centerLW << "(" << distLW << ")";
-
-            output << std::endl;
-
-            ++i;
-        }
-        output << "==========================\n";
-        output << "Error hop frequency: 0(correct), 1, 2, 3,...\n";
-
-        output << "BFS: ";
-        for(int i=0;i<10;++i)
-        {
-            output << errorHopBFS[i]/trial << ", ";
-        }
-        output  << std::endl;
-        output << "LV: ";
-        for(int i=0;i<10;++i)
-        {
-            output << errorHopLW[i]/trial << ", ";
-        }
-        output  << std::endl;
-        output.close();
+    output << "BFS: ";
+    for(int i=0;i<10;++i)
+    {
+        output << errorHopBFS[i]/trial << ", ";
+    }
+    output  << std::endl;
+    output << "LV: ";
+    for(int i=0;i<10;++i)
+    {
+        output << errorHopLW[i]/trial << ", ";
+    }
+    output  << std::endl;
+    output.close();
 }

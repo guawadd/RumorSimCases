@@ -21,6 +21,9 @@ public:
     // calculate rumor centrality for node v in rumorGraph
     Score calcOne(const Graph& rumorGraph, Node v);
 
+    // calculate rumor centrality for all nodes on regular cyclic graph
+    void calcRegCyc(const Graph& regCyc, ScoreMap& rumorCentrality);
+
 private:
     void init(const Graph& rumorGraph);
 
@@ -30,10 +33,17 @@ private:
     
     void  r_down(const Graph& rumorGraph, Node parent, Node child, ScoreMap& rc);
 
+    void  r_down_reg(const Graph& rumorGraph, Node parent, Node child, ScoreMap& rc);
+
+    void  markCyc(const Graph& G, NodeListVector& cycEdgeList);
+
+    Score cycRootSize(Node root, Node one) const;
+
 private:
-    ScoreMap m_t;
-    ScoreMap m_p;
-    unsigned m_magicCnt;
+    ScoreMap    m_t;
+    ScoreMap    m_p;
+    CounterMap  m_cyc;
+    unsigned    m_magicCnt;
 };
 
 #endif

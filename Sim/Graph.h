@@ -16,7 +16,7 @@ typedef std::vector<Node>        NodeList;
 typedef std::vector<NodeList>    NodeListVector;
 typedef std::map<Node, NodeList> NodeListMap;
 
-const Node DummyNode = 9999999;
+const Node DummyNode = 99999999;
 
 typedef long double Score;
 typedef std::map<Node, Score>    ScoreMap;
@@ -29,15 +29,24 @@ const Hop InfDist = -1;
 // Graph stores graph data and implements graph operations
 class Graph {
 public:
-    // Constructors
+    // Default Constructors
     Graph();
 
-    // Special copy constructor, copy nodes only
-    // Node v in G will be the first node in the new graph
-    Graph(const Graph& G, Node v);
+    // Copy constructor
+    Graph(const Graph& G);
+
+    // Assignment operator
+    Graph& operator = (const Graph& G);
+
+    // Destructor
+    ~Graph();
 
     // For data input from file
     Graph(const char file[]);
+    
+    // Special copy constructor, copy nodes only
+    // Node v in G will be the first node in the new graph
+    Graph(const Graph& G, Node v);
     
     // Graph operations
     // no validations for efficiency

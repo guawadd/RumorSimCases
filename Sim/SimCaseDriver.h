@@ -3,7 +3,10 @@
 
 #include "RCEstimator.h"
 #include "BfsHeuristic.h"
+#include "CcHeuristic.h"
+#include "EcHeuristic.h"
 #include "LwHeuristic.h"
+#include "RegCycHeu.h"
 
 #include <fstream>
 #include <iostream>
@@ -24,6 +27,11 @@ public:
     // For each size, repeat experiment multiple times (preset in program), e.g. 5000
     static int RegularTreeSim(const char file[]);
     
+    // Test detection probability on regular cyclic graph using rumor centrality
+    // Run on several rumor graph size (preset in program), e.g. 10, 20, 30, 40, 50, ...
+    // For each size, repeat experiment multiple times (preset in program), e.g. 5000
+    static int RegularCyclicSim(const char file[]);
+
     // Test detection probability on general graph using Shah's bfs heuristic and Gavin's sum of level-wised tree heuristic
     // Run experiment [numExpon] times on rumor graphs of size [rumorSize] 
     static int GeneralGraphSim(const char file[], int rumorSize, int numExp);
