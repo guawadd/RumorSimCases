@@ -7,10 +7,13 @@
 #include "EcHeuristic.h"
 #include "LwHeuristic.h"
 #include "RegCycHeu.h"
+#include "STSHeuristic.h"
+#include "STSPHeuristic.h"
 
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <time.h>
 #include <vector>
 
 // This class is for various simulation cases
@@ -32,7 +35,7 @@ public:
     // For each size, repeat experiment multiple times (preset in program), e.g. 5000
     static int RegularCyclicSim(const char file[]);
 
-    // Test detection probability on general graph using Shah's bfs heuristic and Gavin's sum of level-wised tree heuristic
+    // Test detection probability on general graph using different heuristic
     // Run experiment [numExpon] times on rumor graphs of size [rumorSize] 
     static int GeneralGraphSim(const char file[], int rumorSize, int numExp);
 };

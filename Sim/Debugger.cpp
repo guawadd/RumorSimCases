@@ -17,10 +17,18 @@ void Debugger::testRCCalculator(const Graph& G)
 
 void Debugger::testBFSTree(const Graph& G) 
 {
-    Graph T;
+    Graph bfsT;
 
-    Alg::BFSTree(G, T, G.NodeAt(0));
-    Alg::PrintGraph(T, ".\\test\\test_output_bfsTree.txt");
+    Alg::BFSTree(G, bfsT, G.NodeAt(0));
+    Alg::PrintGraph(bfsT, ".\\test\\test_output_bfsTree.txt");
+}
+
+void Debugger::testRST(const Graph& G) 
+{
+    Graph RST;
+
+    Alg::RST(G, RST);
+    Alg::PrintGraph(RST, ".\\test\\test_output_RST.txt");
 }
 
 void Debugger::testSpreadRumor(const Graph& G)
@@ -43,7 +51,7 @@ void Debugger::testProbOfPerm(const Graph& G)
     {
         std::cout << T.NodeAt(i) << " ";
     }
-    std::cout << "considering cycle is " << Alg::ProbOfPerm(G, T.GetNodeList()) << std::endl;
+    //std::cout << "considering cycle is " << Alg::ProbOfPerm(G, T.GetNodeList()) << std::endl;
     std::cout << "not considering cycle is " << Alg::ProbOfPermS(G, T.GetNodeList()) << std::endl;
 }
 

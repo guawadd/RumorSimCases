@@ -5,7 +5,7 @@ int SimCaseDriver::RegularTreeSim(const char file[])
     Graph underlyingGraph(file);
     RCEstimator rcEstimator;
 
-    const int numRumorSize = 60; // number of different rumor graph sizes
+    const int numRumorSize = 50; // number of different rumor graph sizes
     const int step = 3; // step between two size
     const int numExp = 5000; // number of experiments per size
 
@@ -14,6 +14,7 @@ int SimCaseDriver::RegularTreeSim(const char file[])
     for( int i=0; i<numRumorSize; ++i )
         rumorSize[i] = (i+1)*step;
     
+    const clock_t begin_time = clock();
     for(int i=0; i<numRumorSize; ++i)
     {
         double detectedCnt = 0;
@@ -33,11 +34,12 @@ int SimCaseDriver::RegularTreeSim(const char file[])
                 ++detectedCnt;
         }
 
-        std::cout << "Rumor size " << rumorSize[i] << " completed!\n";
+        //std::cout << "Rumor size " << rumorSize[i] << " completed!\n";
         corrFreq[i] = detectedCnt/numExp;
     }
+    std::cout << "running time: " << double( clock () - begin_time ) /  CLOCKS_PER_SEC << std::endl;
 
-    std::string outPath(".\\result_");
+    /*std::string outPath(".\\result_");
     outPath.append(file);
     std::ofstream output(outPath);
     
@@ -58,7 +60,7 @@ int SimCaseDriver::RegularTreeSim(const char file[])
     
     output.close();
 
-    std::cout << "All done!\n";
+    std::cout << "All done!\n";*/
     return 0;
 }
 
@@ -76,6 +78,7 @@ int SimCaseDriver::RegularCyclicSim(const char file[])
     for( int i=0; i<numRumorSize; ++i )
         rumorSize[i] = (i+1)*step;
     
+    const clock_t begin_time = clock();
     for(int i=0; i<numRumorSize; ++i)
     {
         double detectedCnt = 0;
@@ -95,11 +98,12 @@ int SimCaseDriver::RegularCyclicSim(const char file[])
                 ++detectedCnt;
         }
 
-        std::cout << "Rumor size " << rumorSize[i] << " completed!\n";
+        //std::cout << "Rumor size " << rumorSize[i] << " completed!\n";
         corrFreq[i] = detectedCnt/numExp;
     }
+    std::cout << "cycle running time: " << double( clock () - begin_time ) /  CLOCKS_PER_SEC << std::endl;
 
-    std::string outPath(".\\result_");
+    /*std::string outPath(".\\result_");
     outPath.append(file);
     std::ofstream output(outPath);
     
@@ -120,49 +124,78 @@ int SimCaseDriver::RegularCyclicSim(const char file[])
     
     output.close();
 
-    std::cout << "All done!\n";
+    std::cout << "All done!\n";*/
     return 0;
 }
 
 int SimCaseDriver::GeneralGraphSim(const char file[], int rumorSize, int numExp)
 {
-    Graph underlyingGraph(file);
+    //Graph underlyingGraph(file);
+    Graph underlyingGraph("toy.txt");
+    Graph rumorGraph("toytoy.txt");
 
     std::string outPath(".\\result_");
     outPath.append(file);
     std::ofstream output(outPath);
     output << "True source";
     output << ", Closeness center";
-    output << ", BFS_Heuristic";
-    output << ", Levelwise_Heuristic";
+    output << ", Random BFS center";
+    output << ", Jordan center";
+    output << ", STS center";
+    output << ", STSP center";
         
     output << std::endl;
 
     CcHeuristic ccHeu;
     BfsHeuristic bfsHeu;
     EcHeuristic ecHeu;
+    STSHeuristic stsHeu;
+    STSPHeuristic stspHeu;
     //LwHeuristic lwHeu;
 
     double errorHopCC[10] = {0};
     double errorHopBFS[10] = {0};
     double errorHopEC[10] = {0};
+    double errorHopSTS[10] = {0};
+    double errorHopSTSP[10] = {0};
     //double errorHopLW[10] = {0};
         
     std::cout << "-------------------------------------\n";
     std::cout << "Experiment: number of edges in rumor graph\n";
-    for(int i=1;i<=numExp;) 
+
+    Node source = 1;
+    if( std::strcmp(file,"as.txt")==0 )
+        source = 194;
+    else if( std::strcmp(file,"facebook.txt")==0 )
+        source = 108;
+    else if( std::strcmp(file,"lattice.txt")==0 )
+        source = 25199;
+    else if(std::strcmp(file,"power_grid.txt")==0 )
+        source = 1309;
+    else if( std::strcmp(file,"scale_free.txt")==0 )
+        source = 1;
+    else if( std::strcmp(file,"small_world.txt")==0 )
+        source = 28563;
+    else
     {
-        Graph rumorGraph;
-        Node source = underlyingGraph.NodeAt(rand()%underlyingGraph.NodeSize());
-        Alg::SpreadRumor(underlyingGraph, rumorGraph, source, rumorSize);
+        std::cout << "holy shit\n";
+        source = underlyingGraph.NodeAt(rand()%underlyingGraph.NodeSize());
+    }
+
+    std::cout << "fuck\n";
+    for(int i=1; i<=1; ++i) 
+    {
+        //Graph rumorGraph;
+        //Node source = underlyingGraph.NodeAt(rand()%underlyingGraph.NodeSize());
+        //Alg::SpreadRumor(underlyingGraph, rumorGraph, source, rumorSize);
         //std::string graphname = ".\\rumor_graph" + std::to_string((int long long)i) + ".txt";
         //Alg::PrintGraph(rumorGraph, graphname.c_str());
 
         if(i%10==0)
             std::cout << i << " experiments done!\n";
 
-        if( rumorGraph.EdgeSize()>rumorSize*1.5 )
-            continue;
+        //if( rumorGraph.EdgeSize()>rumorSize*1.5 )
+        //    continue;
 
         //bool skip = false;
         //Node centerLW  = lwHeu.infer(rumorGraph, underlyingGraph, skip);
@@ -171,15 +204,21 @@ int SimCaseDriver::GeneralGraphSim(const char file[], int rumorSize, int numExp)
         Node centerBFS = bfsHeu.infer(rumorGraph, underlyingGraph); 
         Node centerCC = ccHeu.infer(rumorGraph, underlyingGraph);
         Node centerEC = ecHeu.infer(rumorGraph, underlyingGraph);
+        Node centerSTS = stsHeu.infer(rumorGraph, underlyingGraph, 100);
+        Node centerSTSP = stspHeu.infer(rumorGraph, underlyingGraph, 100);
 
         Size distCC = Alg::Distance(rumorGraph, centerCC, source);
         Size distBFS = Alg::Distance(rumorGraph, centerBFS, source);
         Size distEC = Alg::Distance(rumorGraph, centerEC, source);
+        Size distSTS = Alg::Distance(rumorGraph, centerSTS, source);
+        Size distSTSP = Alg::Distance(rumorGraph, centerSTSP, source);
         //Size distLW  = Alg::Distance(rumorGraph, centerLW, source);
         
         ++errorHopCC[distCC];
         ++errorHopBFS[distBFS];
         ++errorHopEC[distEC];
+        ++errorHopSTS[distSTS];
+        ++errorHopSTSP[distSTSP];
         //++errorHopLW[distLW];
             
         output << rumorGraph.NodeAt(0);
@@ -187,11 +226,11 @@ int SimCaseDriver::GeneralGraphSim(const char file[], int rumorSize, int numExp)
         output << ", " << centerCC << "(" << distCC << ")";
         output << ", " << centerBFS << "(" << distBFS << ")";
         output << ", " << centerEC << "(" << distEC << ")";
+        output << ", " << centerSTS << "(" << distSTS << ")";
+        output << ", " << centerSTSP << "(" << distSTSP << ")";
         //output << ", " << centerLW << "(" << distLW << ")";
 
         output << std::endl;
-
-        ++i;
     }
     output << "==========================\n";
     output << "Error hop frequency: 0(correct detection), 1, 2, 3,...\n";
@@ -212,6 +251,18 @@ int SimCaseDriver::GeneralGraphSim(const char file[], int rumorSize, int numExp)
     for(int i=0;i<10;++i)
     {
         output << errorHopBFS[i]/numExp << ", ";
+    }
+    output  << std::endl;
+    output << "STS: ";
+    for(int i=0;i<10;++i)
+    {
+        output << errorHopSTS[i]/numExp << ", ";
+    }
+    output  << std::endl;
+    output << "STSP: ";
+    for(int i=0;i<10;++i)
+    {
+        output << errorHopSTSP[i]/numExp << ", ";
     }
     output  << std::endl;
     /*output << "LV: ";

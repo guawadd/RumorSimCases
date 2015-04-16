@@ -17,17 +17,20 @@ int main(int argc, char* args[]) {
 
     // run simulation case for regular tree
     //if( argc==3 && std::strcmp(args[1], "r")==0 )
-        //return SimCaseDriver::RegularTreeSim(args[1]);
+    //    return SimCaseDriver::RegularTreeSim(args[1]);
 
     // run simulatio case for general graph
     //else if( argc==5 && std::strcmp(args[1], "g")==0 )
       //  return SimCaseDriver::GeneralGraphSim(args[2], std::atoi(args[3]), std::atoi(args[4]));
-    //return SimCaseDriver::GeneralGraphSim(args[1], 30, 5000);
+    //return SimCaseDriver::GeneralGraphSim(args[1], 100, 1);
     //else
       //  return printUsage();
 
-    return SimCaseDriver::RegularCyclicSim(args[1]);
+    //return SimCaseDriver::RegularCyclicSim(args[1]);
     /*Graph g(args[1]);
     Debugger debugger;
-    debugger.testRCCalculator(g);*/
+    debugger.testBFSTree(g);*/
+
+         SimCaseDriver::RegularTreeSim("1000000_reg6_tree.txt");
+    SimCaseDriver::RegularCyclicSim("1000000_regcyc6_tree.txt");
 }

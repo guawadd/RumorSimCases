@@ -44,5 +44,11 @@ Node CcHeuristic::infer(const Graph& rumorGraph, const Graph& underlyingGraph)
 
     Node source = Alg::MaxScoreNode(score);
 
+    std::cout << "CC" << std::endl;
+    for(ScoreMap::iterator it=score.begin(); it!=score.end(); ++it)
+    {
+        std::cout << it->first << ' ' << it->second << std::endl;
+    }
+
     return source;
 }

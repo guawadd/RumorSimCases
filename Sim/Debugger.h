@@ -16,6 +16,8 @@ public:
     
     void testBFSTree(const Graph& G);
 
+    void testRST(const Graph& G);
+
     void testSpreadRumor(const Graph& G);
 
     void testProbOfPerm(const Graph& G);

@@ -19,14 +19,21 @@ Node BfsHeuristic::infer(const Graph& rumorGraph, const Graph& underlyingGraph)
         Score rc = calculator.calcOne(bfsTree, current);
         
         // probability of one BFS permutation for current node (reuse the discovery order in the BFS tree )
-        Score prob = Alg::ProbOfPermS(underlyingGraph, bfsTree.GetNodeList());
+        //Score prob = Alg::ProbOfPerm(underlyingGraph, bfsTree.GetNodeList());
         
         // product of the two quantities
-        score[current] = rc*prob;
+        //score[current] = rc*prob;
+        score[current] = Alg::ProbOfPerm(underlyingGraph, bfsTree.GetNodeList(), rc);
     }
     
     // find the most likily source, which is with the largest score
     Node source = Alg::MaxScoreNode(score);
+
+    std::cout << "BFS" << std::endl;
+    for(ScoreMap::iterator it=score.begin(); it!=score.end(); ++it)
+    {
+        std::cout << it->first << ' ' << it->second << std::endl;
+    }
 
     return source;
 }

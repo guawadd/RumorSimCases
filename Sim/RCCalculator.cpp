@@ -36,7 +36,7 @@ Score RCCalculator::calcOne(const Graph& rumorGraph, Node v)
     // Check data over limits
     if( c == std::numeric_limits<Score>::infinity() )
     {
-        std::cout << "Rumor centrality data over flow!";
+        std::cout << "Rumor centrality data over flow!\n";
         std::exit(3);
     }
     return c;

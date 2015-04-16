@@ -155,6 +155,16 @@ void Graph::RemoveEdge(Node v, Node u)
     m_edgeSize--;
 }
 
+bool Graph::HasNode(Node v) const
+{
+    for(NodeList::const_iterator it=m_nodeList.begin(); it!=m_nodeList.end(); ++it)
+    {
+        if(*it == v)
+            return true;
+    }
+    return false;
+}
+
 bool Graph::HasEdge(Node v, Node u) const
 {
     for(NodeList::const_iterator it=m_adjacencyList.at(v).begin(); it!=m_adjacencyList.at(v).end();++it)

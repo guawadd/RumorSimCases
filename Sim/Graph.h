@@ -54,6 +54,7 @@ public:
     void RemoveNode(Node v);
     void AddEdge(Node v, Node u);
     void RemoveEdge(Node v, Node u);
+    bool HasNode(Node v) const;
     bool HasEdge(Node v, Node u) const;
 
     // Accessors

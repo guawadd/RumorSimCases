@@ -16,11 +16,16 @@ namespace Alg
             Node current = que.front();
             que.pop();
             
-            for(NodeList::const_iterator it=G.NeighborsOf(current).begin();
-                                         it!=G.NeighborsOf(current).end();
-                                         ++it) {
+            NodeList neib = G.NeighborsOf(current);
+            std::random_shuffle(neib.begin(), neib.end());
+
+            for(NodeList::const_iterator it=neib.begin();
+                                         it!=neib.end();
+                                         ++it) 
+            {
                 Node next = *it;
-                if(!visited[next]) {
+                if(!visited[next])
+                {
                     que.push(next);
 
                     T.AddNode(next);
@@ -32,9 +37,64 @@ namespace Alg
         }
     }
 
-    long double ProbOfPerm(const Graph& g, const NodeList& perm) 
+    void BFSPerm(const Graph& G, NodeList& perm, Node root)
     {
-        long double prob=1;
+        std::queue<Node> que;
+        BoolMap visited;
+
+        que.push(root);
+        perm.push_back(root);
+        visited[root] = true;
+
+        while(!que.empty()) 
+        {
+            Node current = que.front();
+            que.pop();
+            
+            NodeList neib = G.NeighborsOf(current);
+            std::random_shuffle(neib.begin(), neib.end());
+
+            for(NodeList::const_iterator it=neib.begin();
+                                         it!=neib.end();
+                                         ++it)
+            {
+                Node next = *it;
+                if(!visited[next])
+                {
+                    que.push(next);
+
+                    perm.push_back(next);
+
+                    visited[next] = true;
+                }
+            }
+        }
+    }
+
+    void RST(const Graph& G, Graph& RST)
+    {
+        // root node
+        Node current = G.NodeAt(rand() % G.NodeSize());
+
+        RST.AddNode(current);
+        
+        while( RST.NodeSize() != G.NodeSize() )
+        {
+            const NodeList& neib = G.NeighborsOf(current);
+            Node next = neib[rand() % neib.size()];
+            if( !RST.HasNode(next) )
+            {
+                RST.AddNode(next);
+                RST.AddEdge(current, next);
+            }
+
+            current = next;
+        }
+    }
+
+    long double ProbOfPerm(const Graph& g, const NodeList& perm, Score base) 
+    {
+        long double prob=base;
         BoolMap infected;
         int boundary_size=0;
         CounterMap count;
@@ -74,7 +134,7 @@ namespace Alg
         }
         if(prob <= 0) 
         {
-            std::cout << "Permutation probability overflowed!";
+            std::cout << "Permutation probability overflowed!\n";
             exit(0);
         }
         return prob;
@@ -121,7 +181,7 @@ namespace Alg
         }
         if(prob <= 0) 
         {
-            std::cout << "Permutation probability overflowed!";
+            std::cout << "Permutation probability overflowed!\n";
             exit(0);
         }
         return prob;

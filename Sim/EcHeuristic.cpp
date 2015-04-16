@@ -33,10 +33,16 @@ Node EcHeuristic::infer(const Graph& rumorGraph, const Graph& underlyingGraph)
 			layers.push_back( nextlayer );
 		}
 
-        score[current] = 1.0/layers.size();
+        score[current] = 1.0/(layers.size()-1);
 	}
     
     Node source = Alg::MaxScoreNode(score);
+
+    std::cout << "EC" << std::endl;
+    for(ScoreMap::iterator it=score.begin(); it!=score.end(); ++it)
+    {
+        std::cout << it->first << ' ' << it->second << std::endl;
+    }
 
     return source;
 }

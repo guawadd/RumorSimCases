@@ -4,7 +4,7 @@
 #include "Algorithm.h"
 #include "RCCalculator.h"
 
-// Closeness heuristic
+// Rumor centrality based heuristic for regular graph with separate cycles
 class RegCycHeu
 {
 public:

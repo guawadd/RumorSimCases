@@ -13,8 +13,14 @@ namespace Alg
     // Find a BFS tree rooted at given node of given graph
     void BFSTree(const Graph& G, Graph& T, Node root);
     
+    // Find a random BFS permutation starting with given node of given graph
+    void BFSPerm(const Graph& G, NodeList& perm, Node root);
+
+    // Generate a uniform random spanning tree of given graph
+    void RST(const Graph& G, Graph& RST);
+
     // Calculate probability of a permitted permutation (Gavin's method of calculation)
-    long double ProbOfPerm(const Graph& g, const NodeList& perm);
+    long double ProbOfPerm(const Graph& g, const NodeList& perm, Score base);
 
     // Same as ProbOfPerm, except let all nominators be 1 (Shah's method of calculation)
     long double ProbOfPermS(const Graph& g, const NodeList& perm);
